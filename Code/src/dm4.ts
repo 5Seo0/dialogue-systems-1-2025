@@ -79,6 +79,7 @@ const dmMachine = setup({
     spstRef: spawn(speechstate, { input: settings }),
     lastResult: null,
     lastResultInterpretation : null,
+    lastEntities: null,
   }),
   id: "DM",
   initial: "Prepare",
@@ -95,21 +96,21 @@ const dmMachine = setup({
       on: {
         LISTEN_COMPLETE: [
           {
-            target: "CheckGrammar",
-            guard: ({ context }) => !!context.lastResult,
+            target: "ProcessIntent",
+            guard: ({ context }) => !!context.lastResultInterpretation,
           },
           { target: ".NoInput" },
         ],
       },
       states: {
         Prompt: {
-          entry: { type: "spst.speak", params: { utterance: `Ask me` } },
+          entry: { type: "spst.speak", params: { utterance: `Welcome to the library assistant! You can ask about library hours, book recommendations, authors, or availability.` } },
           on: { SPEAK_COMPLETE: "Ask" },
         },
         NoInput: {
           entry: {
             type: "spst.speak",
-            params: { utterance: `I can't hear you!` },
+            params: { utterance: `I didn't catch that. Please try again.` },
           },
           on: { SPEAK_COMPLETE: "Ask" },
         },
@@ -121,31 +122,68 @@ const dmMachine = setup({
                 return {
                     lastResult: event.value,
                     lastResultInterpretation : event.nluValue.topIntent,
+                    lastEntities: event.nluValue?.entities ?? null,
                 };
               }),
             },
             ASR_NOINPUT: {
-              actions: assign({ lastResult: null, lastResultInterpretation : null }),
+              actions: assign({ lastResult: null, lastResultInterpretation : null,lastEntities: null, }),
             },
           },
         },
       },
     },
-    CheckGrammar: {
-      entry: {
-        type: "spst.speak",
-        params: ({ context }) => ({
-          utterance: `You just said: ${context.lastResult![0].utterance}. And it ${
-            isInGrammar(context.lastResult![0].utterance) ? "is" : "is not"
-          } in the grammar. And the top intent is ${context.lastResultInterpretation}`,
-        }),
+    ProcessIntent: {
+      entry: ({ context }) => {
+        const intent = context.lastResultInterpretation;
+        const entities = context.lastEntities || {};
+        const utterance = context.lastResult?.[0]?.utterance || "";
+        let response = "";
+
+        switch (intent) {
+          case "library_hours":
+            response =
+              "The library is open from 9 AM to 7 PM on weekdays, and 10 AM to 4 PM on Saturdays. We're closed on Sundays.";
+            break;
+
+          case "recommend_book": {
+            const genre = entities["genre"]?.[0] || "fiction";
+            response = `Sure! I recommend a ${genre} novel like 'The Midnight Library' or 'Dune'.`;
+            break;
+          }
+
+          case "find_author": {
+            const author = entities["author_name"]?.[0];
+            response = author
+              ? `Yes, we have books by ${author}. Would you like to know which ones are available?`
+              : "Which author are you looking for?";
+            break;
+          }
+
+          case "search_book": {
+            const book = entities["book_title"]?.[0];
+            const status = entities["availability_status"]?.[0];
+            response = book
+              ? status
+                ? `"${book}" is currently marked as ${status}. Would you like to borrow it?`
+                : `Yes, "${book}" is in our catalog. Want to check if it's available?`
+              : "Which book are you looking for?";
+            break;
+          }
+
+          default:
+            response = `I'm not sure how to help with "${utterance}". Try asking about a book, author, or library hours.`;
+        }
+
+        context.spstRef.send({
+          type: "SPEAK",
+          value: { utterance: response },
+        });
       },
       on: { SPEAK_COMPLETE: "Done" },
     },
     Done: {
-      on: {
-        CLICK: "Greeting",
-      },
+      on: { CLICK: "Greeting" },
     },
   },
 });
