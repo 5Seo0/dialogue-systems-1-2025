@@ -1,0 +1,534 @@
+{
+    "projectFileVersion": "2024-11-15-preview",
+    "stringIndexType": "Utf16CodeUnit",
+    "metadata": {
+        "projectKind": "Conversation",
+        "settings": {
+            "confidenceThreshold": 0,
+            "normalizeCasing": false,
+            "augmentDiacritics": false
+        },
+        "projectName": "lab4",
+        "multilingual": true,
+        "description": "lab4",
+        "language": "en-us"
+    },
+    "assets": {
+        "projectKind": "Conversation",
+        "intents": [
+            {
+                "category": "None"
+            },
+            {
+                "category": "find_author"
+            },
+            {
+                "category": "recommend_book"
+            },
+            {
+                "category": "library_hours"
+            },
+            {
+                "category": "search_book"
+            }
+        ],
+        "entities": [
+            {
+                "category": "book_title",
+                "compositionSetting": "combineComponents"
+            },
+            {
+                "category": "author_name",
+                "compositionSetting": "combineComponents"
+            },
+            {
+                "category": "availability_status",
+                "compositionSetting": "combineComponents"
+            },
+            {
+                "category": "genre",
+                "compositionSetting": "combineComponents"
+            },
+            {
+                "category": "date_time",
+                "compositionSetting": "combineComponents"
+            }
+        ],
+        "utterances": [
+            {
+                "text": "What time does the library close on Fridays?",
+                "language": "en-us",
+                "intent": "library_hours",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "Is the library open 24/7?",
+                "language": "en-us",
+                "intent": "library_hours",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "How late can I return a book?",
+                "language": "en-us",
+                "intent": "library_hours",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "What’s the library’s schedule for this week?",
+                "language": "en-us",
+                "intent": "library_hours",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "Can I visit the library after 6 PM?",
+                "language": "en-us",
+                "intent": "library_hours",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "Are you open on public holidays?",
+                "language": "en-us",
+                "intent": "library_hours",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "When does the library open in the morning?",
+                "language": "en-us",
+                "intent": "library_hours",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "What time does the library close?",
+                "language": "en-us",
+                "intent": "library_hours",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "Is the library open on weekends?",
+                "language": "en-us",
+                "intent": "library_hours",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "What are the library’s hours today?",
+                "language": "en-us",
+                "intent": "library_hours",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "What’s a good book for learning about psychology",
+                "language": "en-us",
+                "intent": "recommend_book",
+                "entities": [
+                    {
+                        "category": "genre",
+                        "offset": 38,
+                        "length": 10
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "Can you recommend a book about artificial intelligence?",
+                "language": "en-us",
+                "intent": "recommend_book",
+                "entities": [
+                    {
+                        "category": "genre",
+                        "offset": 31,
+                        "length": 23
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "Suggest a classic novel.",
+                "language": "en-us",
+                "intent": "recommend_book",
+                "entities": [
+                    {
+                        "category": "genre",
+                        "offset": 8,
+                        "length": 15
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "Which books are trending right now?",
+                "language": "en-us",
+                "intent": "recommend_book",
+                "entities": [],
+                "dataset": "Train"
+            },
+            {
+                "text": "Give me a good book for beginners in philosophy.",
+                "language": "en-us",
+                "intent": "recommend_book",
+                "entities": [
+                    {
+                        "category": "genre",
+                        "offset": 37,
+                        "length": 10
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "I’m in the mood for a mystery novel.",
+                "language": "en-us",
+                "intent": "recommend_book",
+                "entities": [
+                    {
+                        "category": "genre",
+                        "offset": 20,
+                        "length": 15
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "What are some must-read fantasy books?",
+                "language": "en-us",
+                "intent": "recommend_book",
+                "entities": [
+                    {
+                        "category": "genre",
+                        "offset": 24,
+                        "length": 7
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "I love historical novels. Any recommendations?",
+                "language": "en-us",
+                "intent": "recommend_book",
+                "entities": [
+                    {
+                        "category": "genre",
+                        "offset": 7,
+                        "length": 17
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "Suggest a book similar to The Lord of the Rings.",
+                "language": "en-us",
+                "intent": "recommend_book",
+                "entities": [
+                    {
+                        "category": "book_title",
+                        "offset": 26,
+                        "length": 21
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "Can you recommend a good science fiction book?",
+                "language": "en-us",
+                "intent": "recommend_book",
+                "entities": [
+                    {
+                        "category": "genre",
+                        "offset": 25,
+                        "length": 15
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "Does the library have books by Gabriel García Márquez?",
+                "language": "en-us",
+                "intent": "find_author",
+                "entities": [
+                    {
+                        "category": "author_name",
+                        "offset": 31,
+                        "length": 22
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "I want to see books by Isaac Asimov.",
+                "language": "en-us",
+                "intent": "find_author",
+                "entities": [
+                    {
+                        "category": "author_name",
+                        "offset": 23,
+                        "length": 12
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "Who wrote The Alchemist?",
+                "language": "en-us",
+                "intent": "find_author",
+                "entities": [
+                    {
+                        "category": "book_title",
+                        "offset": 10,
+                        "length": 13
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "Give me some books by Haruki Murakami.",
+                "language": "en-us",
+                "intent": "find_author",
+                "entities": [
+                    {
+                        "category": "author_name",
+                        "offset": 22,
+                        "length": 15
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "List the works of Leo Tolstoy.",
+                "language": "en-us",
+                "intent": "find_author",
+                "entities": [
+                    {
+                        "category": "author_name",
+                        "offset": 18,
+                        "length": 11
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "Which books are available by Stephen King?",
+                "language": "en-us",
+                "intent": "find_author",
+                "entities": [
+                    {
+                        "category": "author_name",
+                        "offset": 29,
+                        "length": 12
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "Do you have anything written by Agatha Christie?",
+                "language": "en-us",
+                "intent": "find_author",
+                "entities": [
+                    {
+                        "category": "author_name",
+                        "offset": 32,
+                        "length": 15
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "Find all books by Jane Austen.",
+                "language": "en-us",
+                "intent": "find_author",
+                "entities": [
+                    {
+                        "category": "author_name",
+                        "offset": 18,
+                        "length": 11
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "What books did George Orwell write?",
+                "language": "en-us",
+                "intent": "find_author",
+                "entities": [
+                    {
+                        "category": "author_name",
+                        "offset": 15,
+                        "length": 13
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "Show me books by J.K. Rowling.",
+                "language": "en-us",
+                "intent": "find_author",
+                "entities": [
+                    {
+                        "category": "author_name",
+                        "offset": 17,
+                        "length": 12
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "How many copies of Dracula do you have?",
+                "language": "en-us",
+                "intent": "search_book",
+                "entities": [
+                    {
+                        "category": "book_title",
+                        "offset": 19,
+                        "length": 7
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "I want to put on hold Frankenstein.",
+                "language": "en-us",
+                "intent": "search_book",
+                "entities": [
+                    {
+                        "category": "availability_status",
+                        "offset": 10,
+                        "length": 11
+                    },
+                    {
+                        "category": "book_title",
+                        "offset": 22,
+                        "length": 12
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "Do you have The Great Gatsby in hardcover?",
+                "language": "en-us",
+                "intent": "search_book",
+                "entities": [
+                    {
+                        "category": "book_title",
+                        "offset": 12,
+                        "length": 16
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "Is 1984 still in stock?",
+                "language": "en-us",
+                "intent": "search_book",
+                "entities": [
+                    {
+                        "category": "book_title",
+                        "offset": 3,
+                        "length": 4
+                    },
+                    {
+                        "category": "availability_status",
+                        "offset": 8,
+                        "length": 14
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "Can I check out War and Peace?",
+                "language": "en-us",
+                "intent": "search_book",
+                "entities": [
+                    {
+                        "category": "availability_status",
+                        "offset": 6,
+                        "length": 9
+                    },
+                    {
+                        "category": "book_title",
+                        "offset": 16,
+                        "length": 13
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "Where can I find To Kill a Mockingbird?",
+                "language": "en-us",
+                "intent": "search_book",
+                "entities": [
+                    {
+                        "category": "book_title",
+                        "offset": 17,
+                        "length": 21
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "Is The Hobbit available right now?",
+                "language": "en-us",
+                "intent": "search_book",
+                "entities": [
+                    {
+                        "category": "book_title",
+                        "offset": 3,
+                        "length": 10
+                    },
+                    {
+                        "category": "availability_status",
+                        "offset": 14,
+                        "length": 9
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "Can I borrow Moby Dick?",
+                "language": "en-us",
+                "intent": "search_book",
+                "entities": [
+                    {
+                        "category": "book_title",
+                        "offset": 13,
+                        "length": 9
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "I’m looking for Pride and Prejudice.",
+                "language": "en-us",
+                "intent": "search_book",
+                "entities": [
+                    {
+                        "category": "book_title",
+                        "offset": 16,
+                        "length": 19
+                    }
+                ],
+                "dataset": "Train"
+            },
+            {
+                "text": "Do you have Dune?",
+                "language": "en-us",
+                "intent": "search_book",
+                "entities": [
+                    {
+                        "category": "book_title",
+                        "offset": 12,
+                        "length": 4
+                    }
+                ],
+                "dataset": "Train"
+            }
+        ]
+    }
+}

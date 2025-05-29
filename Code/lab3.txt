@@ -1,0 +1,19 @@
+As a reference, I used the performance from a YouTube video : https://www.youtube.com/watch?v=nD6Of-pwKP4
+
+<!--ID=B7267351-473F-409D-9765-754A8EBCDE05;Version=1|{"VoiceNameToIdMapItems":[{"Id":"f1b99834-fbfc-4d32-846d-c4dbd3050c19","Name":"Microsoft Server Speech Text to Speech Voice (en-GB, OllieMultilingualNeural)","ShortName":"en-GB-OllieMultilingualNeural","Locale":"en-GB","VoiceType":"StandardVoice"}]}-->
+<!--ID=FCB40C2B-1F9F-4C26-B1A1-CF8E67BE07D1;Version=1|{"Files":{}}-->
+<!--ID=5B95B1CC-2C7B-494F-B746-CF22A0E779B7;Version=1|{"Locales":{"en-GB":{"AutoApplyCustomLexiconFiles":[{}]}}}-->
+<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" xmlns:emo="http://www.w3.org/2009/10/emotionml" version="1.0" xml:lang="en-GB"><voice name="en-GB-OllieMultilingualNeural"><lang xml:lang="en-GB"><prosody rate="-20.00%">Shall I compare </prosody><prosody rate="-40.00%">thee</prosody><prosody rate="-20.00%"> to a summer’s </prosody><prosody rate="-40.00%">day</prosody><break strength="strong" />
+<prosody rate="-20.00%">Thou art more lovely</prosody><prosody rate="-59.00%" pitch="-14.00%"><break strength="weak" /></prosody><prosody rate="-20.00%"> and more temperate.</prosody><prosody rate="-59.00%" pitch="-14.00%"><break strength="medium" /></prosody>
+<prosody rate="-20.00%">Rough winds do shake the darling buds of May,</prosody><prosody rate="-49.00%"><break strength="medium" /></prosody>
+<prosody rate="-20.00%">And summer’s lease hath all too short a date: </prosody><break strength="strong" />
+<prosody rate="-20.00%">Sometime, too hot the eye of heaven shines,  </prosody><break strength="weak" />
+<prosody rate="-20.00%">And often is his gold complexion dimm’d;</prosody><break strength="weak" /><prosody rate="-20.00%">  
+And every fair, from fair, sometime declines, </prosody><break strength="medium" /><prosody rate="-20.00%"> 
+By chance</prosody><break strength="x-weak" /><prosody rate="-20.00%"> or nature’s changing course untrimm’d; </prosody><break strength="weak" /><prosody rate="-20.00%"> 
+But thy eternal summer</prosody><break strength="x-weak" /><prosody rate="-20.00%"> shall not fade,</prosody><break strength="strong" /><prosody rate="-20.00%">  
+Nor lose possession of that fair thou <phoneme alphabet="ipa" ph="əʊst">owest</phoneme>; </prosody><break strength="weak" /><prosody rate="-20.00%"> 
+Nor shall Death brag thou <phoneme alphabet="ipa" ph="wɑˈndəɹst">wander’st</phoneme> in his shade,</prosody><break strength="medium" /><prosody rate="-20.00%">  
+When in eternal lines to time</prosody><prosody rate="-74.00%"><break strength="x-weak" /></prosody><prosody rate="-20.00%"> thou <phoneme alphabet="ipa" ph="gɹo͡ʊˈst">growest</phoneme>:  </prosody><break strength="medium" />
+<prosody rate="-20.00%">So long as men can breathe </prosody><break strength="x-weak" /><prosody rate="-20.00%">or eyes can see,  </prosody><break strength="medium" />
+<prosody rate="-20.00%">So long lives this, </prosody><break strength="x-weak" /><prosody rate="-20.00%">and this </prosody><break strength="x-weak" /><prosody rate="-20.00%">gives life to thee.</prosody></lang></voice></speak>

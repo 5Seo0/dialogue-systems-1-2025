@@ -9,13 +9,17 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@types/react": "^19.0.12",
+    "@types/react-dom": "^19.0.4",
     "typescript": "~5.6.2",
     "vite": "^6.0.5"
   },
   "packageManager": "yarn@3.6.4+sha256.7f7d51b38db0d94adf25c512e3f3d3b47d23c97922eecc540f7440f116bdb99a",
   "dependencies": {
     "@statelyai/inspect": "^0.4.0",
-    "speechstate": "2.8.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "speechstate": "^2.11.0",
     "xstate": "^5.19.2"
   }
 }
