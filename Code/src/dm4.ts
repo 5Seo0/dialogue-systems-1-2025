@@ -152,24 +152,30 @@ const dmMachine = setup({
             break;
           }
 
-          case "find_author": {
-            const author = entities["author_name"]?.[0];
-            response = author
-              ? `Yes, we have books by ${author}. Would you like to know which ones are available?`
-              : "Which author are you looking for?";
-            break;
-          }
+            case "find_author": {
+              const authorEntity = entities["author_name"]?.[0];
+              const author = authorEntity?.text;
 
-          case "search_book": {
-            const book = entities["book_title"]?.[0];
-            const status = entities["availability_status"]?.[0];
-            response = book
-              ? status
-                ? `"${book}" is currently marked as ${status}. Would you like to borrow it?`
-                : `Yes, "${book}" is in our catalog. Want to check if it's available?`
-              : "Which book are you looking for?";
-            break;
-          }
+              response = author
+                ? `Yes, we have books by ${author}. Would you like to know which ones are available?`
+                : "Let me check the author for you.";
+              break;
+            }
+
+            case "search_book": {
+              const entities = context.lastEntities || {};
+              const book = entities["book_title"]?.[0] ?? null;
+              const status = entities["availability_status"]?.[0] ?? null;
+
+              if (book && status) {
+                response = `"${book}" is currently marked as ${status}. Would you like to borrow it?`;
+              } else if (book) {
+                response = `Yes, "${book}" is in our system. Would you like to know if it's available?`;
+              } else {
+                response = `Let me check that for you.`;
+              }
+              break;
+            }
 
           default:
             response = `I'm not sure how to help with "${utterance}". Try asking about a book, author, or library hours.`;
