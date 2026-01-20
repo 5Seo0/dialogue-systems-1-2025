@@ -1,28 +1,26 @@
 import { assign, createActor, setup } from "xstate";
 import { Settings, speechstate } from "speechstate";
 import { createBrowserInspector } from "@statelyai/inspect";
-import {HARD_ASR_ENDPOINT, KEY, NLU_KEY} from "./azure";
+import { KEY, NLU_KEY } from "./azure";
 import { DMContext, DMEvents } from "./types";
 
 const inspector = createBrowserInspector();
 
 const azureCredentials = {
-  endpoint:
-    "https://northeurope.api.cognitive.microsoft.com/sts/v1.0/issuetoken",
+  endpoint: "https://northeurope.api.cognitive.microsoft.com/sts/v1.0/issuetoken",
   key: KEY,
 };
 
 const azureLanguageCredentials = {
-    endpoint: "https://asr-tts-saya.cognitiveservices.azure.com/language/:analyze-conversations?api-version=2024-11-15-preview",
-    key: NLU_KEY,
-    projectName: "lab4",
-    deploymentName: "lab4-deploy"
+  endpoint: "https://asr-tts-saya.cognitiveservices.azure.com/language/:analyze-conversations?api-version=2024-11-15-preview",
+  key: NLU_KEY,
+  projectName: "appointment",
+  deploymentName: "appointment",
 };
 
 const settings: Settings = {
-  azureCredentials: azureCredentials,
-  azureLanguageCredentials : azureLanguageCredentials,
-  speechRecognitionEndpointId : HARD_ASR_ENDPOINT,
+  azureCredentials,
+  azureLanguageCredentials,
   azureRegion: "northeurope",
   asrDefaultCompleteTimeout: 0,
   asrDefaultNoInputTimeout: 5000,
@@ -30,37 +28,32 @@ const settings: Settings = {
   ttsDefaultVoice: "en-US-DavisNeural",
 };
 
+function getPersonName(nluResult: any): string | null {
+  const entities =
+    nluResult?.entities ?? [];
 
-interface GrammarEntry {
-  person?: string;
-  plant?: string;
-  location?: string;
-  animal?: string;
+  const personEntity = entities.find(
+    (e: any) => e.category === "person_name"
+  );
+
+  return personEntity?.text ?? null;
 }
 
-const grammar: { [index: string]: GrammarEntry } = {
-  vlad: { person: "Vladislav Maraev" },
-  aya: { person: "Nayat Astaiza Soriano" },
-  victoria: { person: "Victoria Daniilidou" }
-};
-
-
-function isInGrammar(utterance: string) {
-  return utterance.toLowerCase() in grammar;
+function getEntityText(nluResult: any, category: string): string | null {
+  const entities = nluResult?.entities ?? [];
+  const found = entities.find((e: any) => e.category === category);
+  return found?.text ?? null;
 }
 
-function getPerson(utterance: string) {
-  return (grammar[utterance.toLowerCase()] || {}).person;
-}
+/*interface GrammarEntry {
+}*/
 
 const dmMachine = setup({
   types: {
-    /** you might need to extend these */
     context: {} as DMContext,
     events: {} as DMEvents,
   },
   actions: {
-    /** define your actions here */
     "spst.speak": ({ context }, params: { utterance: string }) =>
       context.spstRef.send({
         type: "SPEAK",
@@ -71,15 +64,16 @@ const dmMachine = setup({
     "spst.listen": ({ context }) =>
       context.spstRef.send({
         type: "LISTEN",
-        value: {nlu: true}
+          value: {nlu:true},
       }),
   },
 }).createMachine({
   context: ({ spawn }) => ({
     spstRef: spawn(speechstate, { input: settings }),
     lastResult: null,
-    lastResultInterpretation : null,
-    lastEntities: null,
+      day: null,
+      time: null,
+      personName: null,
   }),
   id: "DM",
   initial: "Prepare",
@@ -96,21 +90,21 @@ const dmMachine = setup({
       on: {
         LISTEN_COMPLETE: [
           {
-            target: "ProcessIntent",
-            guard: ({ context }) => !!context.lastResultInterpretation,
+            target: "IntentRouter",
+            guard: ({ context }) => !!context.lastResult,
           },
           { target: ".NoInput" },
         ],
       },
       states: {
         Prompt: {
-          entry: { type: "spst.speak", params: { utterance: `Welcome to the library assistant! You can ask about library hours, book recommendations, authors, or availability.` } },
+          entry: { type: "spst.speak", params: { utterance: `Hello, How can I help you?` } },
           on: { SPEAK_COMPLETE: "Ask" },
         },
         NoInput: {
           entry: {
             type: "spst.speak",
-            params: { utterance: `I didn't catch that. Please try again.` },
+            params: { utterance: `I can't hear you!` },
           },
           on: { SPEAK_COMPLETE: "Ask" },
         },
@@ -119,77 +113,209 @@ const dmMachine = setup({
           on: {
             RECOGNISED: {
               actions: assign(({ event }) => {
-                return {
-                    lastResult: event.value,
-                    lastResultInterpretation : event.nluValue.topIntent,
-                    lastEntities: event.nluValue?.entities ?? null,
-                };
+                  console.log("NLU VALUE:", event.nluValue);
+                return { lastResult: event.nluValue };
               }),
             },
             ASR_NOINPUT: {
-              actions: assign({ lastResult: null, lastResultInterpretation : null,lastEntities: null, }),
+              actions: assign({ lastResult: null }),
             },
           },
         },
       },
     },
-    ProcessIntent: {
-      entry: ({ context }) => {
-        const intent = context.lastResultInterpretation;
-        const entities = context.lastEntities || {};
-        const utterance = context.lastResult?.[0]?.utterance || "";
-        let response = "";
-
-        switch (intent) {
-          case "library_hours":
-            response =
-              "The library is open from 9 AM to 7 PM on weekdays, and 10 AM to 4 PM on Saturdays. We're closed on Sundays.";
-            break;
-
-          case "recommend_book": {
-            const genre = entities["genre"]?.[0] || "fiction";
-            response = `Sure! I recommend a ${genre} novel like 'The Midnight Library' or 'Dune'.`;
-            break;
-          }
-
-            case "find_author": {
-              const authorEntity = entities["author_name"]?.[0];
-              const author = authorEntity?.text;
-
-              response = author
-                ? `Yes, we have books by ${author}. Would you like to know which ones are available?`
-                : "Let me check the author for you.";
-              break;
-            }
-
-            case "search_book": {
-              const entities = context.lastEntities || {};
-              const book = entities["book_title"]?.[0] ?? null;
-              const status = entities["availability_status"]?.[0] ?? null;
-
-              if (book && status) {
-                response = `"${book}" is currently marked as ${status}. Would you like to borrow it?`;
-              } else if (book) {
-                response = `Yes, "${book}" is in our system. Would you like to know if it's available?`;
-              } else {
-                response = `Let me check that for you.`;
-              }
-              break;
-            }
-
-          default:
-            response = `I'm not sure how to help with "${utterance}". Try asking about a book, author, or library hours.`;
-        }
-
-        context.spstRef.send({
-          type: "SPEAK",
-          value: { utterance: response },
-        });
+    IntentRouter: {
+        always:[
+            {
+                guard: ({context}) =>
+                    context.lastResult?.topIntent === "who_is",
+                target: "WhoIsFlow",
+            },
+            {
+                guard: ({context})=>
+                    context.lastResult?.topIntent === "create_meeting",
+                target: "MeetingFlow",
+            },
+            {target: "Fallback"},
+        ]
+    },
+      Fallback: {
+        entry: {
+            type: "spst.speak",
+            params : {
+                utterance: "Sorry, I didn't understand that.",
+            },
+        },
+          on: {
+            SPEAK_COMPLETE: "Greeting",
+          },
       },
-      on: { SPEAK_COMPLETE: "Done" },
+      WhoIsFlow: {
+        initial: "CheckEntity",
+          states: {
+              CheckEntity: {
+                  always: [
+                      {
+                          guard: (args) => !!args.context.personName,
+                          target: "ProvideInfo",
+                      },
+                      {
+                          target: "AskWho",
+                      }
+                  ]
+
+              },
+              AskWho: {
+                  entry: {
+                      type: "spst.speak",
+                      params: {
+                          utterance: "Who would you like to know about?",
+                      },
+                  },
+                  on: {
+                      SPEAK_COMPLETE: "Listen",
+                  },
+              },
+              Listen: {
+                  entry: ({context}) =>
+                      context.spstRef.send({
+                          type: "LISTEN",
+                          value: {nlu: true},
+                      }),
+                  on: {
+                      RECOGNISED: {
+                          actions: assign(({event}) => ({
+                              lastResult: event.nluValue,
+                              personName: getPersonName(event.nluValue),
+                          })),
+                      },
+                      LISTEN_COMPLETE:{
+                          target: "CheckEntity",
+                      },
+                      ASR_NOINPUT: {
+                          target: "AskWho",
+                      },
+                  },
+              },
+              ProvideInfo: {
+                  entry: {
+                      type: "spst.speak",
+                      params: ({context}) => ({
+                          utterance: `${context.personName} is a well-known person`,
+                      }),
+                  },
+                  on: {
+                      SPEAK_COMPLETE: "#DM.Done",
+                  },
+              },
+          },
+      },
+    MeetingFlow: {
+        initial: "CheckDay",
+        states: {
+            CheckDay : {
+                always: [
+                    {
+                        guard: (args) =>
+                            !!getEntityText(args.context.lastResult, "day"),
+                        target: "CheckTime",
+                    },
+                    { target: "AskDay" },
+                ],
+            },
+            AskDay : {
+                entry: {
+                    type: "spst.speak",
+                    params: {utterance: "What day is the meeting?"},
+                },
+                on : {SPEAK_COMPLETE: "ListenDay"},
+            },
+            ListenDay : {
+                entry: ({ context }) =>
+                context.spstRef.send({
+                    type: "LISTEN",
+                    value: { nlu: true },
+                }),
+                on: {
+                    RECOGNISED: {
+                        actions: assign(({event}) => {
+                            const day = getEntityText(event.nluValue, "day");
+                            return {
+                                lastResult: event.nluValue,
+                                day: day ?? null,
+                            };
+                        }),
+                    },
+                    LISTEN_COMPLETE: {
+                        target: "CheckDay",
+                    },
+                    ASR_NOINPUT: {
+                        target: "AskDay",
+                    },
+                },
+            },
+
+            CheckTime : {
+                always: [
+                    {
+                        guard: (args) =>
+                            !!getEntityText(args.context.lastResult, "time"),
+                        target: "Confirm",
+                    },
+                    { target: "AskTimePrompt" },
+                ],
+            },
+            AskTimePrompt: {
+                entry: {
+                    type: "spst.speak",
+                    params:{
+                        utterance: "What time should the meeting start?",
+                    },
+                },
+                on: { SPEAK_COMPLETE: "ListenTime" },
+            },
+            ListenTime : {
+                entry: ({context}) =>
+                context.spstRef.send({
+                    type: "LISTEN",
+                    value: { nlu: true},
+                }),
+                on: {
+                    RECOGNISED: {
+                        actions: assign(({event})=> {
+                            const time = getEntityText(event.nluValue, "time");
+                            return {
+                                lastResult: event.nluValue,
+                                time: time ?? null,
+                            };
+                        }),
+                    },
+                    LISTEN_COMPLETE: {
+                        target: "CheckTime",
+                    },
+                    ASR_NOINPUT: {
+                        target: "AskTimePrompt",
+                    },
+                },
+            },
+
+            Confirm: {
+                entry: {
+                    type: "spst.speak",
+                    params: ({context}) => ({
+                        utterance: `Your meeting is scheduled on ${context.day} at ${context.time}.`,
+                    }),
+                },
+                on: {
+                    SPEAK_COMPLETE: "#DM.Done",
+                },
+            },
+        },
     },
     Done: {
-      on: { CLICK: "Greeting" },
+      on: {
+        CLICK: "Greeting",
+      },
     },
   },
 });
